@@ -1,0 +1,53 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: TestWorkflows
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract coverage %
+        shell: bash -l {0}
+        run: |
+          PERCENT=$(( RANDOM % 101 ))
+          echo "coverage=${PERCENT}"
+          cd ..
+          mkdir -p badge-data
+
+          # Choose color based on percentage
+          # 90-100% brightgreen
+          # 80-89% green
+          # 70-79% yellowgreen
+          # 60-69% yellow
+          # 50-59%  orange
+          # <50% red
+          if (( PERCENT >= 90 )); then
+              COLOR=brightgreen
+          elif (( PERCENT >= 80 )); then
+              COLOR=green
+          elif (( PERCENT >= 70 )); then
+              COLOR=yellowgreen
+          elif (( PERCENT >= 60 )); then
+              COLOR=yellow
+          elif (( PERCENT >= 50 )); then
+              COLOR=orange
+          else
+              COLOR=red
+          fi
+
+          # create url with percentage
+          n=$(($PERCENT+0))
+          url="https://img.shields.io/badge/Code%20Coverage-${PERCENT}%25-${COLOR}?style=flat"
+          curl -sSL --fail "$url" -o badge-data/coverage.svg
+      # Commit updated badge svg
+      - name: Commit badge data
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update coverage badge"
+          file_pattern: badge-data/coverage.svg

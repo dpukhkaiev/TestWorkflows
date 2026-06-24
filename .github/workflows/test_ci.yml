@@ -1,17 +1,22 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
 name: TestWorkflows
 
 on:
   pull_request:
     types: [closed]
 
+permissions:
+  contents: write
+
 jobs:
   if_merged:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Extract coverage %
         shell: bash -l {0}
         run: |
@@ -50,3 +55,4 @@ jobs:
         with:
           commit_message: "Update coverage badge"
           file_pattern: badge-data/coverage.svg
+          branch: main

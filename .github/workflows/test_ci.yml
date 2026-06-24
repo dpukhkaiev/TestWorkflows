@@ -17,7 +17,6 @@ jobs:
         run: |
           PERCENT=$(( RANDOM % 101 ))
           echo "coverage=${PERCENT}"
-          cd ..
           mkdir -p badge-data
 
           # Choose color based on percentage

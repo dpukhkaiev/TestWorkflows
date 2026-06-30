@@ -18,11 +18,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-
       - name: Test with pytest
         shell: bash -el {0}
         run: |
-          cd main_node
           PERCENT=$(( RANDOM % 101 ))
           echo "${PERCENT}" > coverage.txt
       - name: Upload Coverage XML

@@ -23,7 +23,6 @@ jobs:
       - name: Extract coverage %
         shell: bash -l {0}
         run: |
-          cd main_node
           PERCENT=$(cat coverage.txt)
           echo "coverage=${PERCENT}"
           mkdir -p badge-data

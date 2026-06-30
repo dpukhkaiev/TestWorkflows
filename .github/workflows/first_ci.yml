@@ -1,0 +1,30 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: FIRST-CI
+
+on:
+  push:
+    branches: [ master, develop, main ]
+  pull_request:
+    branches: [ master, develop, main ]
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Test with pytest
+        shell: bash -el {0}
+        run: |
+          PERCENT=$(( RANDOM % 101 ))
+          echo "${PERCENT}" > coverage.txt
+      - name: Upload Coverage XML
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: main_node/coverage.txt

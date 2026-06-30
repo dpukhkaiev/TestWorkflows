@@ -1,14 +1,18 @@
 name: TestWorkflows
 
 on:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: ["FIRST-CI"]
+    types:
+      - completed
 
 permissions:
   contents: write
 
 jobs:
   if_merged:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'develop' }}
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,7 +23,7 @@ jobs:
       - name: Extract coverage %
         shell: bash -l {0}
         run: |
-          PERCENT=$(( RANDOM % 101 ))
+          PERCENT=$(cat coverage.txt)
           echo "coverage=${PERCENT}"
           mkdir -p badge-data
 
